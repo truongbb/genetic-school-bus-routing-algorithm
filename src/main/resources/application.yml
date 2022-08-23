@@ -1,0 +1,32 @@
+server:
+  port: 8888
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+
+spring:
+  application:
+    name: 'time-table-scheduling'
+
+  jpa:
+    database-platform: org.hibernate.dialect.Oracle10gDialect
+    show-sql: true
+
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: school_bus_routing
+    password: admin
+    dbcp2:
+      test-while-idle: true
+      validation-query: SELECT 1 FROM DUAL
+
+application:
+  genetic-algorithm-rate:
+    cross-over-rate: 0
+    mutation-rate: 0
+    selection-rate: 0
+  elitis-number: 0
+  population-size: 0
+  generation-number: 0
