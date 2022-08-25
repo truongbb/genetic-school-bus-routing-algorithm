@@ -1,10 +1,20 @@
 package com.github.truongbb.geneticschoolbusroutingalgorithm.entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
+@Data
 @Entity
 @Table(name = "DISTANCE_MATRIX")
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DistanceMatrix implements Serializable {
 
     @Id
