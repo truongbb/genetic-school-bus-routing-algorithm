@@ -1,8 +1,8 @@
 create table bus_stop
 (
     id                integer primary key,
-    latitude          number,
-    longitude         number,
+    latitude          number(10,7),
+    longitude         number(10,7),
     number_of_student number not null
 );
 
