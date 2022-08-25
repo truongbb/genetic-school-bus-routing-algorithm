@@ -27,6 +27,9 @@ application:
     cross-over-rate: 0
     mutation-rate: 0
     selection-rate: 0
+  bus-number: 0
   elitis-number: 0
   population-size: 0
   generation-number: 0
+  vehicle-capacity: 0
+  max-ridding-time: 0

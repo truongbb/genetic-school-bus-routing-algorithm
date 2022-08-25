@@ -1,8 +1,10 @@
 package com.github.truongbb.geneticschoolbusroutingalgorithm.config;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+@Getter
 @Configuration
 public class SchoolBusConfiguration {
 
@@ -23,5 +25,14 @@ public class SchoolBusConfiguration {
 
     @Value("${application.generation-number}")
     Integer generationNumber;
+
+    @Value("${application.bus-number}")
+    Integer busNumber;
+
+    @Value("${application.vehicle-capacity}")
+    Integer vehicleCapacity;
+
+    @Value("${application.max-ridding-time}")
+    Integer maxRiddingTime;
 
 }
