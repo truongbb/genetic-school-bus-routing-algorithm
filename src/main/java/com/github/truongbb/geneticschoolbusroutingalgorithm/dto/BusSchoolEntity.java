@@ -11,6 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -142,8 +143,31 @@ public class BusSchoolEntity {
         return null;
     }
 
-    public List<Double> getRouteLengths(List<DistanceMatrix> distanceMatrices) {
-        return new ArrayList<>();
+    public List<Double> getRouteLengths(List<DistanceMatrix> distanceMatrices, BusStop schoolStop) {
+        return this.routes.stream().map(r -> {
+            double dist = 0;
+            for (int i = 0; i < r.getRoute().size(); i++) {
+                // Get the distance of the two bus stops, if the current bus stop is the last one,
+                // get the distance from it to the school. Then, sum up the distance with the current
+                // total distance.
+                BusStop busStop = r.getRoute().get(i);
+                BusStop nextBusStop = r.getRoute().get(i + 1);
+                DistanceMatrix distanceMatrix = null;
+                int finalI = i;
+                distanceMatrix = distanceMatrices
+                        .stream()
+                        .filter(d -> d.getStartBusStop().getId().equals(busStop.getId()) &&
+                                finalI + 1 >= r.getRoute().size() ? d.getEndBusStop().getId().equals(schoolStop.getId()) : d.getEndBusStop().getId().equals(nextBusStop.getId())
+                        )
+                        .findFirst()
+                        .orElse(null);
+                dist += !ObjectUtils.isEmpty(distanceMatrix) ? distanceMatrix.getDistance() : 0;
+            }
+            return dist;
+        }).collect(Collectors.toList());
     }
 
+    public BusSchoolEntity fixBusCapacities(List<BusStop> busStops, Integer vehicleCapacity) {
+        return null;
+    }
 }

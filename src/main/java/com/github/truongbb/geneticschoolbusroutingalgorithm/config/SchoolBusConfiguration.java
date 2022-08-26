@@ -36,4 +36,7 @@ public class SchoolBusConfiguration {
     @Value("${application.max-ridding-time}")
     Integer maxRiddingTime;
 
+    @Value("${application.school-stop-id}")
+    Integer schoolStopId;
+
 }

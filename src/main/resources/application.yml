@@ -33,3 +33,4 @@ application:
   generation-number: 0
   vehicle-capacity: 0
   max-ridding-time: 0
+  school-stop-id: 0
