@@ -10,6 +10,7 @@ import com.github.truongbb.geneticschoolbusroutingalgorithm.repository.DistanceM
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -25,8 +26,6 @@ public class SchoolBusServiceImpl implements SchoolBusService {
     private List<Route> routes;
     private List<BusSchoolEntity> population;
     private List<Integer> buses;
-
-    private int[] students;
 
     public SchoolBusServiceImpl(BusStopRepository busStopRepository, DistanceMatrixRepository distanceMatrixRepository,
                                 SchoolBusConfiguration schoolBusConfiguration) {
@@ -45,20 +44,6 @@ public class SchoolBusServiceImpl implements SchoolBusService {
          */
 
         this.initData();
-    }
-
-    private void initData() {
-        busStops = busStopRepository.findAll();
-        distanceMatrices = distanceMatrixRepository.findAll();
-        buses = new ArrayList<>();
-        for (int i = 0; i < schoolBusConfiguration.getBusNumber(); i++) {
-            buses.add(i);
-        }
-    }
-
-    private void generateBase() {
-        int[] student = this.busStops.stream().mapToInt(BusStop::getNumberOfStudent).toArray();
-        this.students = student;
         this.generateInitialPopulation();
         this.sort();
         int generation = 0;
@@ -76,7 +61,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
                     this.selectTwoParents(male, female);
 
                     // Apply crossover and select the better child
-                    child = this.Crossoverrate(male, female);
+                    child = this.crossOverRate(male, female);
 
                     // Apply 6-case mutation to select child
                     int index = 6;
@@ -109,13 +94,23 @@ public class SchoolBusServiceImpl implements SchoolBusService {
         System.out.println("Solution found");
     }
 
-    private void sort() {
-        for (int i = 0; i < this.population.size(); i++) {
-
+    private void initData() {
+        busStops = busStopRepository.findAll();
+        distanceMatrices = distanceMatrixRepository.findAll();
+        buses = new ArrayList<>();
+        for (int i = 0; i < schoolBusConfiguration.getBusNumber(); i++) {
+            buses.add(i);
         }
     }
 
-    private BusSchoolEntity Crossoverrate(BusSchoolEntity male, BusSchoolEntity female) {
+    private void sort() {
+        for (BusSchoolEntity busSchoolEntity : this.population) {
+            busSchoolEntity.setFitness(this.calculateFitness(busSchoolEntity));
+        }
+        this.population.sort(Comparator.comparingDouble(BusSchoolEntity::getFitness));
+    }
+
+    private BusSchoolEntity crossOverRate(BusSchoolEntity male, BusSchoolEntity female) {
         int point1, point2;
         point1 = new Random(this.busStops.size() - 2).nextInt();
         do {
