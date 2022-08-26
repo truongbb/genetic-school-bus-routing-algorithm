@@ -62,6 +62,7 @@ public class BusSchoolEntity {
 
         // Remove all empty genes
         for (int i = 0; i < busNumber; i++) {
+            // TODO - create new entity
         }
     }
 
@@ -195,6 +196,8 @@ public class BusSchoolEntity {
     }
 
     public BusSchoolEntity fixBusCapacities(List<BusStop> busStops, Integer vehicleCapacity) {
+        // TODO - fixBusCapacities
         return null;
     }
+
 }
