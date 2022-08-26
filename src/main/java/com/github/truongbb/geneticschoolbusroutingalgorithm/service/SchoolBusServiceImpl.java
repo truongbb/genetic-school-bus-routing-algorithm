@@ -50,8 +50,8 @@ public class SchoolBusServiceImpl implements SchoolBusService {
         int generation = 0;
         System.out.println("Generation " + generation + " - Best solution fitness: ");
         for (generation = 1; generation <= this.schoolBusConfiguration.getGenerationNumber(); generation++) {
-            this.population = new ArrayList<>();
-            while (this.population.size() < this.schoolBusConfiguration.getPopulationSize()) {
+            List<BusSchoolEntity> newPopulation = new ArrayList<>();
+            while (newPopulation.size() < this.schoolBusConfiguration.getPopulationSize()) {
                 BusSchoolEntity child = null;
                 double r = new Random().nextDouble();
                 if (r < this.schoolBusConfiguration.getCrossOverRate()) {
@@ -87,11 +87,22 @@ public class SchoolBusServiceImpl implements SchoolBusService {
                 child = this.repair(child);
 
                 // add the new individual to the new population
-                population.add(child);
+                newPopulation.add(child);
             }
-            System.out.println("Generation " + generation + " - Best solution fitness: ");
+            this.updateElites(newPopulation);
+            this.population = newPopulation;
+            this.sort();
+            System.out.println("Generation " + generation + " - Best solution fitness: "); // TODO - print
         }
         System.out.println("Solution found");
+    }
+
+    private void updateElites(List<BusSchoolEntity> newPopulation) {
+        for (BusSchoolEntity busSchoolEntity : newPopulation) {
+            busSchoolEntity.setFitness(this.calculateFitness(busSchoolEntity));
+        }
+        newPopulation.sort(Comparator.comparingDouble(BusSchoolEntity::getFitness));
+        // TODO - setEntityAt
     }
 
     private void initData() {
