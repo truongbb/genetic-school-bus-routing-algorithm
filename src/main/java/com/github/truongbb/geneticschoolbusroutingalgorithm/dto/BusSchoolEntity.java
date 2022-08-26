@@ -32,11 +32,6 @@ public class BusSchoolEntity {
      * <p>
      * ==> Mảng 2 chiều chromosome mang ý nghĩa lưu trữ xem điểm dừng đó nằm ở tuyến nào, vị trí nào trong tuyến
      */
-//    private List<BusStop> busStops;
-//    private BusStopRepository busStopRepository;
-//    public void display(){
-//        this.busStops = busStopRepository.getAll();
-//    }
     public BusSchoolEntity(Integer busNumber, Integer busStopNumber) {
 
         this.routes = new ArrayList<>();
@@ -52,7 +47,30 @@ public class BusSchoolEntity {
     }
 
     public BusSchoolEntity(Integer busNumber, int[][] chromosome) {
+        this.routes = new ArrayList<>();
+        this.chromosome = chromosome;
 
+        // Initiate each route with a list of N genes (N is the number of bus stops)
+        for (int i = 0; i < busNumber; i++) {
+            this.routes.add(new Route());
+        }
+
+        //Insert the bus sop (i+1) to the rout marked by the gene chromosome[i][0] at chromosome[i][1] the position
+        for (int i = 0; i < this.chromosome.length; i++) {
+            this.routes.get(this.chromosome[i][0] - 1);
+        }
+
+        // Remove all empty genes
+        for (int i = 0; i < busNumber; i++) {
+        }
+    }
+
+    public int[][] getChromosome() {
+        int[][] copy = new int[this.chromosome.length][];
+        for (int i = 0; i < this.chromosome.length; i++) {
+            copy[i] = new int[]{this.chromosome[i][0], this.chromosome[i][1]};
+        }
+        return copy;
     }
 
     public boolean assignBusToBusStop(Integer bus, BusStop busStop, List<DistanceMatrix> distanceMatrices, Integer vehicleCapacity, Integer maxRiddingTime) {
@@ -135,12 +153,21 @@ public class BusSchoolEntity {
 
     }
 
+    // Encode the current information into chromosome
     public BusSchoolEntity encode() {
         for (int bus = 0; bus < this.routes.size(); bus++) {
-            for (int i = 0; i < this.routes.get(bus).getRoute().size(); i++) {
+            Route route = this.routes.get(bus) ;
+            for (int i = 0; i < route.getRoute().size(); i++) {
+                BusStop busStops = route.getRoute().get(i);
+                Integer busStop = busStops.getId();
+
+                // the bus stop is 1-index
+                // the bus is 0-index while the representation is 1-index
+                this.chromosome[busStop - 1][0] = bus + 1;
+                this.chromosome[busStop - 1][0] = i;
             }
         }
-        return null;
+        return this;
     }
 
     public List<Double> getRouteLengths(List<DistanceMatrix> distanceMatrices, BusStop schoolStop) {
