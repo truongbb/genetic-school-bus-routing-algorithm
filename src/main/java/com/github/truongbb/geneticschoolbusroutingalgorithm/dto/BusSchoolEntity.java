@@ -22,6 +22,7 @@ public class BusSchoolEntity {
     int[][] chromosome; // nhiễm sắc thể phục vụ việc tối ưu tìm kiếm và đi lai ghép, đột biến
     boolean isElite; // thực thể này có phải là đáp án tối ưu, tốt nhất chưa
     double Fitness;
+
     /**
      * Cấu trúc của nhiễm sắc thể chromosome như sau:
      * Mảng 2 chiều [n][m] với
@@ -35,7 +36,6 @@ public class BusSchoolEntity {
 //    public void display(){
 //        this.busStops = busStopRepository.getAll();
 //    }
-
     public BusSchoolEntity(Integer busNumber, Integer busStopNumber) {
 
         this.routes = new ArrayList<>();
@@ -50,7 +50,7 @@ public class BusSchoolEntity {
         }
     }
 
-    public BusSchoolEntity(Integer busNumber, int[][] chromosome){
+    public BusSchoolEntity(Integer busNumber, int[][] chromosome) {
 
     }
 
@@ -134,7 +134,7 @@ public class BusSchoolEntity {
 
     }
 
-    public BusSchoolEntity encode(){
+    public BusSchoolEntity encode() {
         for (int bus = 0; bus < this.routes.size(); bus++) {
             for (int i = 0; i < this.routes.get(bus).getRoute().size(); i++) {
             }
@@ -145,4 +145,5 @@ public class BusSchoolEntity {
     public List<Double> getRouteLengths(List<DistanceMatrix> distanceMatrices) {
         return new ArrayList<>();
     }
+
 }
