@@ -21,7 +21,7 @@ public class BusSchoolEntity {
     List<Route> routes; // danh sách các tuyến xe
     int[][] chromosome; // nhiễm sắc thể phục vụ việc tối ưu tìm kiếm và đi lai ghép, đột biến
     boolean isElite; // thực thể này có phải là đáp án tối ưu, tốt nhất chưa
-
+    double Fitness;
     /**
      * Cấu trúc của nhiễm sắc thể chromosome như sau:
      * Mảng 2 chiều [n][m] với
@@ -30,6 +30,11 @@ public class BusSchoolEntity {
      * <p>
      * ==> Mảng 2 chiều chromosome mang ý nghĩa lưu trữ xem điểm dừng đó nằm ở tuyến nào, vị trí nào trong tuyến
      */
+//    private List<BusStop> busStops;
+//    private BusStopRepository busStopRepository;
+//    public void display(){
+//        this.busStops = busStopRepository.getAll();
+//    }
 
     public BusSchoolEntity(Integer busNumber, Integer busStopNumber) {
 
@@ -43,6 +48,10 @@ public class BusSchoolEntity {
         for (int i = 0; i < busStopNumber; i++) {
             this.chromosome[i] = new int[]{0, 0};
         }
+    }
+
+    public BusSchoolEntity(Integer busNumber, int[][] chromosome){
+
     }
 
     public boolean assignBusToBusStop(Integer bus, BusStop busStop, List<DistanceMatrix> distanceMatrices, Integer vehicleCapacity, Integer maxRiddingTime) {
@@ -125,4 +134,15 @@ public class BusSchoolEntity {
 
     }
 
+    public BusSchoolEntity encode(){
+        for (int bus = 0; bus < this.routes.size(); bus++) {
+            for (int i = 0; i < this.routes.get(bus).getRoute().size(); i++) {
+            }
+        }
+        return null;
+    }
+
+    public List<Double> getRouteLengths(List<DistanceMatrix> distanceMatrices) {
+        return new ArrayList<>();
+    }
 }
