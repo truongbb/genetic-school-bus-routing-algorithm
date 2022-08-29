@@ -24,13 +24,13 @@ spring:
 
 application:
   genetic-algorithm-rate:
-    cross-over-rate: 0
-    mutation-rate: 0
+    cross-over-rate: 0.95
+    mutation-rate: 0.1
     selection-rate: 0
-  bus-number: 0
-  elites-number: 0
-  population-size: 0
-  generation-number: 0
-  vehicle-capacity: 0
+  bus-number: 7
+  elites-number: 5
+  population-size: 200
+  generation-number: 200
+  vehicle-capacity: 30
   max-ridding-time: 0
   school-stop-id: 0
