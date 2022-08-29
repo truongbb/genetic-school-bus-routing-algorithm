@@ -17,8 +17,8 @@ public class SchoolBusConfiguration {
     @Value("${application.genetic-algorithm-rate.selection-rate}")
     Double selectionRate;
 
-    @Value("${application.elitis-number}")
-    Integer elitisNumber;
+    @Value("${application.elites-number}")
+    Integer elitesNumber;
 
     @Value("${application.population-size}")
     Integer populationSize;

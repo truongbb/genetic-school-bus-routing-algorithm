@@ -10,7 +10,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
@@ -157,7 +159,7 @@ public class BusSchoolEntity {
     // Encode the current information into chromosome
     public BusSchoolEntity encode() {
         for (int bus = 0; bus < this.routes.size(); bus++) {
-            Route route = this.routes.get(bus) ;
+            Route route = this.routes.get(bus);
             for (int i = 0; i < route.getRoute().size(); i++) {
                 BusStop busStops = route.getRoute().get(i);
                 Integer busStop = busStops.getId();
@@ -195,9 +197,56 @@ public class BusSchoolEntity {
         }).collect(Collectors.toList());
     }
 
-    public BusSchoolEntity fixBusCapacities(List<BusStop> busStops, Integer vehicleCapacity) {
-        // TODO - fixBusCapacities
-        return null;
+    public BusSchoolEntity fixBusCapacities(List<BusStop> busStops, Integer busCapacity) {
+        List<BusStop> redundantBusStops = new ArrayList<>();
+        int currentCapacity, currentIndex;
+
+        // The tmpCapacities hold the current capacity of each bus
+        Map<Route, Integer> tmpCapacities = new HashMap<>();
+
+        // traverse through routes and let all bus capacities smaller than the limitation
+        for (Route route : this.routes) {
+            currentCapacity = 0;
+            currentIndex = 0;
+            List<BusStop> bs = route.getRoute();
+            for (int j = 0; j < bs.size(); j++) {
+                Integer numberOfStudent = busStops.get(bs.get(j).getId()).getNumberOfStudent();
+                currentCapacity += numberOfStudent;
+                if (currentCapacity > busCapacity) {
+                    currentIndex = j - 1;
+                    tmpCapacities.put(route, currentCapacity - numberOfStudent);
+                    break;
+                }
+            }
+            tmpCapacities.put(route, currentCapacity);
+
+            if (currentIndex > 0) {
+                for (int j = route.getRoute().size() - 1; j > currentIndex; j--) {
+                    redundantBusStops.add(route.getRoute().get(j));
+                    route.getRoute().remove(j);
+                }
+            }
+        }
+
+        // add redundants bus stops to buses with lowest loads
+        for (BusStop busStop : redundantBusStops) {
+            int routeIndex = 0;
+            int minLoad = Integer.MAX_VALUE;
+            for (int i = 0; i < tmpCapacities.size(); i++) {
+                Integer currentLoad = tmpCapacities.get(this.routes.get(i));
+                if (currentLoad < minLoad) {
+                    minLoad = currentLoad;
+                    routeIndex = i;
+                }
+            }
+
+            Route route = this.routes.get(routeIndex);
+            route.getRoute().add(busStop);
+            int newCapacity = tmpCapacities.get(route) + busStops.get(busStop.getId()).getNumberOfStudent();
+            tmpCapacities.put(route, newCapacity);
+        }
+
+        return this;
     }
 
 }
