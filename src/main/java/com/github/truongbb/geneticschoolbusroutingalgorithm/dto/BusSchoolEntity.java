@@ -98,7 +98,7 @@ public class BusSchoolEntity {
         for (BusStop bst : newBusStops) {
             DistanceMatrix distanceMatrix = distanceMatrices
                     .stream()
-                    .filter(d -> d.getStartBusStop().equals(0) && d.getEndBusStop().equals(bst.getId()))
+                    .filter(d -> d.getStartBusStop().getId().equals(0) && d.getEndBusStop().getId().equals(bst.getId()))
                     .findFirst()
                     .orElse(null);
             if (ObjectUtils.isEmpty(distanceMatrix)) {
@@ -120,7 +120,7 @@ public class BusSchoolEntity {
                 BusStop finalK = k;
                 DistanceMatrix distanceMatrixTmp = distanceMatrices
                         .stream()
-                        .filter(d -> d.getStartBusStop().equals(finalK.getId()) && d.getEndBusStop().equals(bst.getId()))
+                        .filter(d -> d.getStartBusStop().getId().equals(finalK.getId()) && d.getEndBusStop().getId().equals(bst.getId()))
                         .findFirst()
                         .orElse(null);
                 if (ObjectUtils.isEmpty(distanceMatrixTmp)) {

@@ -8,6 +8,7 @@ import com.github.truongbb.geneticschoolbusroutingalgorithm.entity.BusStop;
 import com.github.truongbb.geneticschoolbusroutingalgorithm.entity.DistanceMatrix;
 import com.github.truongbb.geneticschoolbusroutingalgorithm.repository.BusStopRepository;
 import com.github.truongbb.geneticschoolbusroutingalgorithm.repository.DistanceMatrixRepository;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -119,7 +120,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
         for (int i = 0; i < schoolBusConfiguration.getBusNumber(); i++) {
             buses.add(i);
         }
-        this.population = new ArrayList<>();
+//        this.population = new ArrayList<>();
     }
 
     private void sort() {
@@ -131,9 +132,9 @@ public class SchoolBusServiceImpl implements SchoolBusService {
 
     private BusSchoolEntity crossOver(BusSchoolEntity male, BusSchoolEntity female) {
         int point1, point2;
-        point1 = new Random(this.busStops.size() - 2).nextInt();
+        point1 = new Random().nextInt(this.busStops.size() - 2);
         do {
-            point2 = new Random(this.busStops.size() - 2).nextInt();
+            point2 = new Random().nextInt(this.busStops.size() - 2);
         } while (point1 == point2);
         if (point1 > point2) {
             // swap point1 and point2
@@ -207,13 +208,13 @@ public class SchoolBusServiceImpl implements SchoolBusService {
 
         // apply 3-points permutation;
         int point1, point2, point3;
-        point1 = new Random(chromosome0.length - 1).nextInt();
+        point1 = new Random().nextInt(chromosome0.length - 1);
         do {
-            point2 = new Random(chromosome0.length - 1).nextInt();
+            point2 = new Random().nextInt(chromosome0.length - 1);
         } while (point2 == point1);
 
         do {
-            point3 = new Random(chromosome0.length - 1).nextInt();
+            point3 = new Random().nextInt(chromosome0.length - 1);
         } while (point3 == point1 || point3 == point2);
 
         this._setGenePosition(chromosome0, mutations[0], point1, point2, point3, point1, point3, point2);
@@ -254,16 +255,16 @@ public class SchoolBusServiceImpl implements SchoolBusService {
 
     // Select one entity randomly from the current population
     private BusSchoolEntity selectOneParent() {
-        int index = new Random(this.schoolBusConfiguration.getPopulationSize() - 1).nextInt();
+        int index = new Random().nextInt(this.schoolBusConfiguration.getPopulationSize() - 1);
         return this.population.get(index);
     }
 
     // Select male and female parents from
     private RepresentativeEntity selectTwoParents() {
         int maleIndex, femaleIndex;
-        maleIndex = new Random((int) Math.round(this.schoolBusConfiguration.getSelectionRate() * this.schoolBusConfiguration.getPopulationSize())).nextInt();
+        maleIndex = new Random().nextInt((int) Math.round(this.schoolBusConfiguration.getSelectionRate() * this.schoolBusConfiguration.getPopulationSize()));
         do {
-            femaleIndex = new Random(this.population.size() - 1).nextInt();
+            femaleIndex = new Random().nextInt(this.population.size() - 1);
         } while (femaleIndex == maleIndex);
         BusSchoolEntity male = this.population.get(maleIndex);
         BusSchoolEntity female = this.population.get(femaleIndex);
@@ -275,18 +276,23 @@ public class SchoolBusServiceImpl implements SchoolBusService {
 
         while (this.population.size() < this.schoolBusConfiguration.getGenerationNumber()) {
             BusSchoolEntity entity = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), this.busStops.size());
-            int index = new Random(this.schoolBusConfiguration.getBusNumber() - 1).nextInt();
-            int bus = this.buses.get(index);
-            this.buses.remove(index);
-
+            Integer bus;
+            do{
+                int index = new Random().nextInt(this.schoolBusConfiguration.getBusNumber() - 1);
+                bus = this.buses.get(index);
+                this.buses.remove(index);
+            }while (bus == 0);
             while (this.busStops.size() > 0) {
-                int i = new Random(this.busStops.size() - 1).nextInt();
+                int i = new Random().nextInt(this.busStops.size() - 1);
                 BusStop busStop = this.busStops.get(i);
                 this.busStops.remove(i);
 
                 if (!entity.assignBusToBusStop(bus, busStop, this.distanceMatrices,
                         this.schoolBusConfiguration.getVehicleCapacity(), this.schoolBusConfiguration.getMaxRiddingTime())) {
-                    int j = new Random(this.buses.size() - 1).nextInt();
+                    int j;
+                    do{
+                        j = new Random().nextInt(this.buses.size() - 1);
+                    }while (j==0);
                     Integer busJ = this.buses.get(j);
                     this.buses.remove(j);
                     entity.assignBusToBusStop(busJ, busStop, this.distanceMatrices,
