@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class SchoolBusServiceImpl implements SchoolBusService {
@@ -48,7 +49,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
         this.generateInitialPopulation();
         this.sort();
         int generation = 0;
-        System.out.println("Generation " + generation + " - Best solution fitness: ");
+        System.out.println("Generation " + generation + " - Best solution fitness: " + this.population.get(0).getFitness() + " (" + this.getBestSolutionRoutesLength(this.distanceMatrices) + " minutes)");
         for (generation = 1; generation <= this.schoolBusConfiguration.getGenerationNumber(); generation++) {
             List<BusSchoolEntity> newPopulation = new ArrayList<>();
             while (newPopulation.size() < this.schoolBusConfiguration.getPopulationSize()) {
@@ -65,8 +66,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
                     child = this.crossOver(male, female);
 
                     // Apply 6-case mutation to select child
-                    int index = 6;
-                    child = this.mutationCase(child, index);
+                    child = this.mutationCase(child, 6);
 
                 } else {
                     r = new Random().nextDouble();
@@ -75,8 +75,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
 
                     if (r < this.schoolBusConfiguration.getMutationRate()) {
                         // Apply 5-case mutation to the selected individual
-                        int index = 5;
-                        child = this.mutationCase(entity, index);
+                        child = this.mutationCase(entity, 5);
                     } else {
                         // Copy the selected individual
                         child = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), entity.getChromosome());
@@ -92,9 +91,14 @@ public class SchoolBusServiceImpl implements SchoolBusService {
             this.updateElites(newPopulation);
             this.population = newPopulation;
             this.sort();
-            System.out.println("Generation " + generation + " - Best solution fitness: "); // TODO - print
+            System.out.println("Generation " + generation + " - Best solution fitness: " + this.population.get(0).getFitness() + " (" + this.getBestSolutionRoutesLength(this.distanceMatrices) + " minutes)");
         }
         System.out.println("Solution found");
+    }
+
+    private String getBestSolutionRoutesLength(List<DistanceMatrix> distanceMatrices) {
+        List<Double> lengths = this.population.get(0).getRouteLengths(distanceMatrices, this.getSchoolStop());
+        return lengths.stream().map(String::valueOf).collect(Collectors.joining(", "));
     }
 
     private void updateElites(List<BusSchoolEntity> newPopulation) {
@@ -102,7 +106,10 @@ public class SchoolBusServiceImpl implements SchoolBusService {
             busSchoolEntity.setFitness(this.calculateFitness(busSchoolEntity));
         }
         newPopulation.sort(Comparator.comparingDouble(BusSchoolEntity::getFitness));
-        // TODO - setEntityAt
+        int currentSize = newPopulation.size();
+        for (int i = 0; i < this.schoolBusConfiguration.getElitesNumber(); i++) {
+            newPopulation.set(currentSize - i - 1, this.population.get(i));
+        }
     }
 
     private void initData() {
@@ -112,6 +119,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
         for (int i = 0; i < schoolBusConfiguration.getBusNumber(); i++) {
             buses.add(i);
         }
+        this.population = new ArrayList<>();
     }
 
     private void sort() {
