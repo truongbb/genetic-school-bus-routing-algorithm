@@ -26,7 +26,7 @@ application:
   genetic-algorithm-rate:
     cross-over-rate: 0.95
     mutation-rate: 0.1
-    selection-rate: 0
+    selection-rate: 1
   bus-number: 7
   elites-number: 5
   population-size: 200
