@@ -8,7 +8,6 @@ import com.github.truongbb.geneticschoolbusroutingalgorithm.entity.BusStop;
 import com.github.truongbb.geneticschoolbusroutingalgorithm.entity.DistanceMatrix;
 import com.github.truongbb.geneticschoolbusroutingalgorithm.repository.BusStopRepository;
 import com.github.truongbb.geneticschoolbusroutingalgorithm.repository.DistanceMatrixRepository;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -117,10 +116,9 @@ public class SchoolBusServiceImpl implements SchoolBusService {
         busStops = busStopRepository.findAll();
         distanceMatrices = distanceMatrixRepository.findAll();
         buses = new ArrayList<>();
-        for (int i = 0; i < schoolBusConfiguration.getBusNumber(); i++) {
+        for (int i = 1; i <= schoolBusConfiguration.getBusNumber(); i++) {
             buses.add(i);
         }
-//        this.population = new ArrayList<>();
     }
 
     private void sort() {
@@ -274,27 +272,25 @@ public class SchoolBusServiceImpl implements SchoolBusService {
     private void generateInitialPopulation() {
         this.population = new ArrayList<>();
 
-        while (this.population.size() < this.schoolBusConfiguration.getGenerationNumber()) {
+        while (this.population.size() < this.schoolBusConfiguration.getPopulationSize()) {
+
+            List<Integer> busTemp = new ArrayList<>(this.buses);
+            List<BusStop> busStopsTemp = new ArrayList<>(this.busStops);
+
             BusSchoolEntity entity = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), this.busStops.size());
-            Integer bus;
-            do{
-                int index = new Random().nextInt(this.schoolBusConfiguration.getBusNumber() - 1);
-                bus = this.buses.get(index);
-                this.buses.remove(index);
-            }while (bus == 0);
-            while (this.busStops.size() > 0) {
-                int i = new Random().nextInt(this.busStops.size() - 1);
-                BusStop busStop = this.busStops.get(i);
-                this.busStops.remove(i);
+            int index = new Random().nextInt(busTemp.size() - 1);
+            int bus = busTemp.get(index);
+            busTemp.remove(index);
+            while (busStopsTemp.size() > 0) {
+                int i = new Random().nextInt(busStopsTemp.size() - 1);
+                BusStop busStop = busStopsTemp.get(i);
+                busStopsTemp.remove(i);
 
                 if (!entity.assignBusToBusStop(bus, busStop, this.distanceMatrices,
                         this.schoolBusConfiguration.getVehicleCapacity(), this.schoolBusConfiguration.getMaxRiddingTime())) {
-                    int j;
-                    do{
-                        j = new Random().nextInt(this.buses.size() - 1);
-                    }while (j==0);
-                    Integer busJ = this.buses.get(j);
-                    this.buses.remove(j);
+                    int j = new Random().nextInt(busTemp.size() - 1);
+                    Integer busJ = busTemp.get(j);
+                    busTemp.remove(j);
                     entity.assignBusToBusStop(busJ, busStop, this.distanceMatrices,
                             this.schoolBusConfiguration.getVehicleCapacity(), this.schoolBusConfiguration.getMaxRiddingTime());
                 }
