@@ -181,7 +181,7 @@ public class BusSchoolEntity {
                 // get the distance from it to the school. Then, sum up the distance with the current
                 // total distance.
                 BusStop busStop = r.getRoute().get(i);
-                BusStop nextBusStop = r.getRoute().get(i + 1);
+                BusStop nextBusStop = i + 1 >= r.getRoute().size() ? schoolStop : r.getRoute().get(i + 1);
                 DistanceMatrix distanceMatrix = null;
                 int finalI = i;
                 distanceMatrix = distanceMatrices

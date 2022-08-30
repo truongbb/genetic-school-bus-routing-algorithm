@@ -276,26 +276,27 @@ public class SchoolBusServiceImpl implements SchoolBusService {
 
             List<Integer> busTemp = new ArrayList<>(this.buses);
             List<BusStop> busStopsTemp = new ArrayList<>(this.busStops);
+            busStopsTemp = busStopsTemp.stream().filter(bst -> bst.getId() != 0).collect(Collectors.toList());
 
             BusSchoolEntity entity = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), this.busStops.size());
             int index = new Random().nextInt(busTemp.size() - 1);
             int bus = busTemp.get(index);
             busTemp.remove(index);
             while (busStopsTemp.size() > 0) {
-                int i = new Random().nextInt(busStopsTemp.size() - 1);
+                int i = busStopsTemp.size() > 1 ? new Random().nextInt(busStopsTemp.size() - 1) : 0;
                 BusStop busStop = busStopsTemp.get(i);
                 busStopsTemp.remove(i);
 
                 if (!entity.assignBusToBusStop(bus, busStop, this.distanceMatrices,
                         this.schoolBusConfiguration.getVehicleCapacity(), this.schoolBusConfiguration.getMaxRiddingTime())) {
-                    int j = new Random().nextInt(busTemp.size() - 1);
-                    Integer busJ = busTemp.get(j);
-                    busTemp.remove(j);
-                    entity.assignBusToBusStop(busJ, busStop, this.distanceMatrices,
+                    index = busTemp.size() > 1 ? new Random().nextInt(busTemp.size() - 1) : 0;
+                    bus = busTemp.get(index);
+                    busTemp.remove(index);
+                    entity.assignBusToBusStop(bus, busStop, this.distanceMatrices,
                             this.schoolBusConfiguration.getVehicleCapacity(), this.schoolBusConfiguration.getMaxRiddingTime());
                 }
             }
-            this.population.add(entity);
+            this.population.add(entity.encode());
         }
     }
 
