@@ -282,7 +282,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
             List<BusStop> busStopsTemp = new ArrayList<>(this.busStops);
             busStopsTemp = busStopsTemp.stream().filter(bst -> bst.getId() != 0).collect(Collectors.toList());
 
-            BusSchoolEntity entity = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), this.busStops.size());
+            BusSchoolEntity entity = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), this.busStops.size() - 1);
             int index = new Random().nextInt(busTemp.size() - 1);
             int bus = busTemp.get(index);
             busTemp.remove(index);
