@@ -211,10 +211,11 @@ public class BusSchoolEntity {
         int currentCapacity, currentIndex;
 
         // The tmpCapacities hold the current capacity of each bus
-        Map<Route, Integer> tmpCapacities = new HashMap<>();
+        Map<Integer, Integer> tmpCapacities = new HashMap<>();
 
         // traverse through routes and let all bus capacities smaller than the limitation
-        for (Route route : this.routes) {
+        for (int i = 0; i < this.routes.size(); i++) {
+            Route route = this.routes.get(i);
             currentCapacity = 0;
             currentIndex = 0;
             List<BusStop> bs = route.getRoute();
@@ -223,11 +224,11 @@ public class BusSchoolEntity {
                 currentCapacity += numberOfStudent;
                 if (currentCapacity > busCapacity) {
                     currentIndex = j - 1;
-                    tmpCapacities.put(route, currentCapacity - numberOfStudent);
+                    tmpCapacities.put(i, currentCapacity - numberOfStudent);
                     break;
                 }
             }
-            tmpCapacities.put(route, currentCapacity);
+            tmpCapacities.put(i, currentCapacity);
 
             if (currentIndex > 0) {
                 for (int j = route.getRoute().size() - 1; j > currentIndex; j--) {
@@ -236,13 +237,12 @@ public class BusSchoolEntity {
                 }
             }
         }
-
-        // add redundants bus stops to buses with lowest loads
+        // add redundant bus stops to buses with lowest loads
         for (BusStop busStop : redundantBusStops) {
             int routeIndex = 0;
             int minLoad = Integer.MAX_VALUE;
             for (int i = 0; i < tmpCapacities.size(); i++) {
-                Integer currentLoad = tmpCapacities.get(this.routes.get(i));
+                Integer currentLoad = tmpCapacities.get(i);
                 if (currentLoad < minLoad) {
                     minLoad = currentLoad;
                     routeIndex = i;
@@ -251,8 +251,8 @@ public class BusSchoolEntity {
 
             Route route = this.routes.get(routeIndex);
             route.getRoute().add(busStop);
-            int newCapacity = tmpCapacities.get(route) + busStops.get(busStop.getId()).getNumberOfStudent();
-            tmpCapacities.put(route, newCapacity);
+            int newCapacity = tmpCapacities.get(routeIndex) + busStops.get(busStop.getId()).getNumberOfStudent();
+            tmpCapacities.put(routeIndex, newCapacity);
         }
 
         return this;
