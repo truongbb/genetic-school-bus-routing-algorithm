@@ -227,10 +227,14 @@ public class SchoolBusServiceImpl implements SchoolBusService {
         candidates = new BusSchoolEntity[index];
         double minFitness = Double.MAX_VALUE;
         double currentFitness;
+        if (index == 6) {
+            candidates[0] = entity;
+            minFitness = this.calculateFitness(entity);
+        }
 
         for (int i = 0; i < 5; i++) {
             int temp = index == 5 ? i : i + 1;
-            candidates[temp] = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), mutations[temp], this.busStops);
+            candidates[temp] = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), mutations[index == 5 ? temp : temp - 1], this.busStops);
             currentFitness = this.calculateFitness(candidates[temp]);
             if (currentFitness < minFitness) {
                 minFitness = currentFitness;
