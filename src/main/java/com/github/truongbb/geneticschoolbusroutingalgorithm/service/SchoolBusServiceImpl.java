@@ -94,6 +94,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
             System.out.println("Generation " + generation + " - Best solution fitness: " + this.population.get(0).getFitness() + " (" + this.getBestSolutionRoutesLength(this.distanceMatrices) + " minutes)");
         }
         System.out.println("Solution found");
+        this.population.get(0).printBeautifully(this.distanceMatrices);
     }
 
     private String getBestSolutionRoutesLength(List<DistanceMatrix> distanceMatrices) {
