@@ -320,7 +320,7 @@ insert into distance_matrix(id, start_bus_stop_id, end_bus_stop_id, distance, du
 
 insert into distance_matrix(id, start_bus_stop_id, end_bus_stop_id, distance, durations) values (246, 6, 0, 1582, 240);
 insert into distance_matrix(id, start_bus_stop_id, end_bus_stop_id, distance, durations) values (247, 6, 1, 1576, 228);
-insert into distance_matrix(id, start_bus_stop_id, end_bus_stop_id, distance, durations) values (248, 5, 2, 4410, 715);
+insert into distance_matrix(id, start_bus_stop_id, end_bus_stop_id, distance, durations) values (248, 6, 2, 4410, 715);
 insert into distance_matrix(id, start_bus_stop_id, end_bus_stop_id, distance, durations) values (249, 6, 3, 698, 111);
 insert into distance_matrix(id, start_bus_stop_id, end_bus_stop_id, distance, durations) values (250, 6, 4, 2423, 362);
 insert into distance_matrix(id, start_bus_stop_id, end_bus_stop_id, distance, durations) values (251, 6, 5, 869, 160);

@@ -286,13 +286,16 @@ public class SchoolBusServiceImpl implements SchoolBusService {
                 int i = busStopsTemp.size() > 1 ? new Random().nextInt(busStopsTemp.size() - 1) : 0;
                 BusStop busStop = busStopsTemp.get(i);
                 busStopsTemp.remove(i);
-
+                if (busTemp.size() == 0){
+                    busTemp = new ArrayList<>(this.buses);
+                    busTemp = busTemp.stream().filter(bst -> bst != bus).collect(Collectors.toList());
+                }
                 if (!entity.assignBusToBusStop(bus, busStop, this.distanceMatrices,
                         this.schoolBusConfiguration.getVehicleCapacity(), this.schoolBusConfiguration.getMaxRiddingTime())) {
                     index = busTemp.size() > 1 ? new Random().nextInt(busTemp.size() - 1) : 0;
-                    bus = busTemp.get(index);
+                    int busj = busTemp.get(index);
                     busTemp.remove(index);
-                    entity.assignBusToBusStop(bus, busStop, this.distanceMatrices,
+                    entity.assignBusToBusStop(busj, busStop, this.distanceMatrices,
                             this.schoolBusConfiguration.getVehicleCapacity(), this.schoolBusConfiguration.getMaxRiddingTime());
                 }
             }

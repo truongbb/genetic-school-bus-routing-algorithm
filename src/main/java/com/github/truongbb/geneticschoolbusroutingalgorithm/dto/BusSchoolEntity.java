@@ -54,17 +54,22 @@ public class BusSchoolEntity {
 
         // Initiate each route with a list of N genes (N is the number of bus stops)
         for (int i = 0; i < busNumber; i++) {
-            this.routes.add(new Route());
+            this.routes.add(new Route(new ArrayList<>(chromosome.length)));
         }
 
         //Insert the bus sop (i+1) to the rout marked by the gene chromosome[i][0] at chromosome[i][1] the position
         for (int i = 0; i < this.chromosome.length; i++) {
-            this.routes.get(this.chromosome[i][0] - 1);
+            Route route = this.routes.get(this.chromosome[i][0] - 1);
+            BusStop busStop = route.getRoute().get(i + 1);
+            route.getRoute().add(this.chromosome[i][1], busStop);
         }
 
         // Remove all empty genes
         for (int i = 0; i < busNumber; i++) {
             // TODO - create new entity
+            List<BusStop> route = this.routes.get(i).getRoute();
+            List<BusStop> removeList = route.stream().filter(s -> s.getId() == 0).collect(Collectors.toList());
+            this.routes.get(i).getRoute().removeAll(removeList);
         }
     }
 
@@ -115,7 +120,7 @@ public class BusSchoolEntity {
         newBusStops.remove(k);
         while (newBusStops.size() > 0) {
             // choose the next bus stop to be the nearest one to k
-            currentDist = -1;
+            currentDist = 99999999;
             for (BusStop bst : newBusStops) {
                 BusStop finalK = k;
                 DistanceMatrix distanceMatrixTmp = distanceMatrices
@@ -126,7 +131,7 @@ public class BusSchoolEntity {
                 if (ObjectUtils.isEmpty(distanceMatrixTmp)) {
                     continue;
                 }
-                if (distanceMatrixTmp.getDistance() > currentDist) {
+                if (distanceMatrixTmp.getDistance() < currentDist) {
                     k1 = bst;
                     currentDist = distanceMatrixTmp.getDistance();
                 }
