@@ -258,4 +258,38 @@ public class BusSchoolEntity {
         return this;
     }
 
+    public void printBeautifully(List<DistanceMatrix> distanceMatrices) {
+        for (int i = 0; i < this.routes.size(); i++) {
+            Route route = this.routes.get(i);
+            if (route.getRoute().size() > 0) {
+                System.out.print("Bus " + i + " (" + route.getRoute().size() + " stops) ");
+                double dist = 0;
+                int stu = 0;
+                for (int j = 0; j < route.getRoute().size() - 1; j++) {
+                    int finalJ = j;
+                    DistanceMatrix distanceMatrix = distanceMatrices
+                            .stream()
+                            .filter(d ->
+                                    d.getStartBusStop().getId().equals(route.getRoute().get(finalJ).getId())
+                                            && d.getEndBusStop().getId().equals(route.getRoute().get(finalJ + 1).getId()))
+                            .findFirst()
+                            .orElse(null);
+                    dist += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getDistance();
+                    stu += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getStartBusStop().getNumberOfStudent();
+                }
+                DistanceMatrix distanceMatrix = distanceMatrices
+                        .stream()
+                        .filter(d ->
+                                d.getStartBusStop().getId().equals(route.getRoute().get(route.getRoute().size() - 1).getId())
+                                        && d.getEndBusStop().getId().equals(0))
+                        .findFirst()
+                        .orElse(null);
+                dist += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getDistance();
+                stu += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getStartBusStop().getNumberOfStudent();
+                System.out.print(dist + " meters, " + stu + " students: ");
+                System.out.println(this.routes.get(i).getRoute().stream().map(r -> r.getId() + "").collect(Collectors.joining(",")));
+            }
+        }
+
+    }
 }
