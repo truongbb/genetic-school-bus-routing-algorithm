@@ -78,7 +78,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
                         child = this.mutationCase(entity, 5);
                     } else {
                         // Copy the selected individual
-                        child = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), entity.getChromosome());
+                        child = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), entity.getChromosome(), this.busStops);
                     }
                 }
 
@@ -130,9 +130,9 @@ public class SchoolBusServiceImpl implements SchoolBusService {
 
     private BusSchoolEntity crossOver(BusSchoolEntity male, BusSchoolEntity female) {
         int point1, point2;
-        point1 = new Random().nextInt(this.busStops.size() - 2);
+        point1 = new Random().nextInt(this.busStops.size() - 3);
         do {
-            point2 = new Random().nextInt(this.busStops.size() - 2);
+            point2 = new Random().nextInt(this.busStops.size() - 3);
         } while (point1 == point2);
         if (point1 > point2) {
             // swap point1 and point2
@@ -144,8 +144,8 @@ public class SchoolBusServiceImpl implements SchoolBusService {
         int[][] maleChromosome = male.getChromosome();
         int[][] femaleChromosome = female.getChromosome();
 
-        int[][] child1Chromosome = new int[this.busStops.size()][];
-        int[][] child2Chromosome = new int[this.busStops.size()][];
+        int[][] child1Chromosome = new int[this.busStops.size() - 1][];
+        int[][] child2Chromosome = new int[this.busStops.size() - 1][];
 
         for (int i = 0; i <= point1; i++) {
             child1Chromosome[i] = new int[]{maleChromosome[i][0], maleChromosome[i][1]};
@@ -155,12 +155,12 @@ public class SchoolBusServiceImpl implements SchoolBusService {
             child1Chromosome[i] = new int[]{femaleChromosome[i][0], femaleChromosome[i][1]};
             child2Chromosome[i] = new int[]{maleChromosome[i][0], maleChromosome[i][1]};
         }
-        for (int i = point2 + 1; i <= this.busStops.size() - 1; i++) {
+        for (int i = point2 + 1; i <= this.busStops.size() - 2; i++) {
             child1Chromosome[i] = new int[]{maleChromosome[i][0], maleChromosome[i][1]};
             child2Chromosome[i] = new int[]{femaleChromosome[i][0], femaleChromosome[i][1]};
         }
-        BusSchoolEntity child1 = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), child1Chromosome);
-        BusSchoolEntity child2 = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), child2Chromosome);
+        BusSchoolEntity child1 = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), child1Chromosome, this.busStops);
+        BusSchoolEntity child2 = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), child2Chromosome, this.busStops);
 
         double fitness1 = this.calculateFitness(child1);
         double fitness2 = this.calculateFitness(child2);
@@ -230,7 +230,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
 
         for (int i = 0; i < 5; i++) {
             int temp = index == 5 ? i : i + 1;
-            candidates[temp] = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), mutations[temp]);
+            candidates[temp] = new BusSchoolEntity(this.schoolBusConfiguration.getBusNumber(), mutations[temp], this.busStops);
             currentFitness = this.calculateFitness(candidates[temp]);
             if (currentFitness < minFitness) {
                 minFitness = currentFitness;
