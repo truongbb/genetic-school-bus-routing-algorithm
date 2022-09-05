@@ -48,20 +48,28 @@ public class BusSchoolEntity {
         }
     }
 
-    public BusSchoolEntity(Integer busNumber, int[][] chromosome) {
+    public BusSchoolEntity(Integer busNumber, int[][] chromosome, List<BusStop> busStops) {
         this.routes = new ArrayList<>();
         this.chromosome = chromosome;
 
         // Initiate each route with a list of N genes (N is the number of bus stops)
         for (int i = 0; i < busNumber; i++) {
-            this.routes.add(new Route(new ArrayList<>(chromosome.length)));
+            ArrayList<BusStop> tempRoute = new ArrayList<>(chromosome.length);
+            for (int j = 0; j < chromosome.length; j++) {
+                int finalJ = j;
+                BusStop busStop = busStops.stream().filter(t -> t.getId().equals(finalJ)).findFirst().orElse(null);
+                tempRoute.add(busStop);
+            }
+            this.routes.add(new Route(tempRoute));
         }
 
         //Insert the bus sop (i+1) to the rout marked by the gene chromosome[i][0] at chromosome[i][1] the position
         for (int i = 0; i < this.chromosome.length; i++) {
             Route route = this.routes.get(this.chromosome[i][0] - 1);
-            BusStop busStop = route.getRoute().get(i + 1);
-            route.getRoute().add(this.chromosome[i][1], busStop);
+//            BusStop busStop = route.getRoute().get(i + 1);
+            int tempI = i + 1;
+            BusStop busStop = busStops.stream().filter(t -> t.getId().equals(tempI)).findFirst().orElse(null);
+            route.getRoute().set(this.chromosome[i][1], busStop);
         }
 
         // Remove all empty genes
@@ -172,7 +180,7 @@ public class BusSchoolEntity {
                 // the bus stop is 1-index
                 // the bus is 0-index while the representation is 1-index
                 this.chromosome[busStop - 1][0] = bus + 1;
-                this.chromosome[busStop - 1][0] = i;
+                this.chromosome[busStop - 1][1] = i;
             }
         }
         return this;
