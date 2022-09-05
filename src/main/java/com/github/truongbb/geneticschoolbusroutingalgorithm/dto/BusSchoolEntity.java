@@ -56,20 +56,16 @@ public class BusSchoolEntity {
         for (int i = 0; i < busNumber; i++) {
             ArrayList<BusStop> tempRoute = new ArrayList<>(chromosome.length);
             for (int j = 0; j < chromosome.length; j++) {
-                int finalJ = j;
-                BusStop busStop = busStops.stream().filter(t -> t.getId().equals(finalJ)).findFirst().orElse(null);
-                tempRoute.add(busStop);
+                tempRoute.add(busStops.get(0));
             }
             this.routes.add(new Route(tempRoute));
         }
 
         //Insert the bus sop (i+1) to the rout marked by the gene chromosome[i][0] at chromosome[i][1] the position
         for (int i = 0; i < this.chromosome.length; i++) {
-            Route route = this.routes.get(this.chromosome[i][0] - 1);
-//            BusStop busStop = route.getRoute().get(i + 1);
             int tempI = i + 1;
             BusStop busStop = busStops.stream().filter(t -> t.getId().equals(tempI)).findFirst().orElse(null);
-            route.getRoute().set(this.chromosome[i][1], busStop);
+            this.routes.get(this.chromosome[i][0] - 1).getRoute().add(this.chromosome[i][1], busStop);
         }
 
         // Remove all empty genes
