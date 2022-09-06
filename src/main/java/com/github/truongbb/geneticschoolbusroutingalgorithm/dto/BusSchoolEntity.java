@@ -192,11 +192,10 @@ public class BusSchoolEntity {
                 BusStop busStop = r.getRoute().get(i);
                 BusStop nextBusStop = i + 1 >= r.getRoute().size() ? schoolStop : r.getRoute().get(i + 1);
                 DistanceMatrix distanceMatrix = null;
-                int finalI = i;
                 distanceMatrix = distanceMatrices
                         .stream()
                         .filter(d -> d.getStartBusStop().getId().equals(busStop.getId()) &&
-                                finalI + 1 >= r.getRoute().size() ? d.getEndBusStop().getId().equals(schoolStop.getId()) : d.getEndBusStop().getId().equals(nextBusStop.getId())
+                             d.getEndBusStop().getId().equals(nextBusStop.getId())
                         )
                         .findFirst()
                         .orElse(null);
@@ -264,6 +263,7 @@ public class BusSchoolEntity {
             if (route.getRoute().size() > 0) {
                 System.out.print("Bus " + i + " (" + route.getRoute().size() + " stops) ");
                 double dist = 0;
+                double minutes = 0;
                 int stu = 0;
                 for (int j = 0; j < route.getRoute().size() - 1; j++) {
                     int finalJ = j;
@@ -275,6 +275,7 @@ public class BusSchoolEntity {
                             .findFirst()
                             .orElse(null);
                     dist += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getDistance();
+                    minutes += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getDurations();
                     stu += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getStartBusStop().getNumberOfStudent();
                 }
                 DistanceMatrix distanceMatrix = distanceMatrices
@@ -285,8 +286,9 @@ public class BusSchoolEntity {
                         .findFirst()
                         .orElse(null);
                 dist += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getDistance();
+                minutes += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getDurations();
                 stu += ObjectUtils.isEmpty(distanceMatrix) ? 0 : distanceMatrix.getStartBusStop().getNumberOfStudent();
-                System.out.print(dist + " meters, " + stu + " students: ");
+                System.out.print(dist + " meters, " + minutes + " minutes, " + stu + " students: ");
                 System.out.println(this.routes.get(i).getRoute().stream().map(r -> r.getId() + "").collect(Collectors.joining(",")));
             }
         }

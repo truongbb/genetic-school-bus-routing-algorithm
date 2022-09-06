@@ -49,10 +49,10 @@ public class SchoolBusServiceImpl implements SchoolBusService {
         this.generateInitialPopulation();
         this.sort();
         int generation = 0;
-        System.out.println("Generation " + generation + " - Best solution fitness: " + this.population.get(0).getFitness() + " (" + this.getBestSolutionRoutesLength(this.distanceMatrices) + " minutes)");
+        System.out.println("Generation " + generation + " - Best solution fitness: " + this.population.get(0).getFitness() + " (" + this.getBestSolutionRoutesLength(this.distanceMatrices) + " meters)");
         for (generation = 1; generation <= this.schoolBusConfiguration.getGenerationNumber(); generation++) {
-            List<BusSchoolEntity> newPopulation = new ArrayList<>();
-            while (newPopulation.size() < this.schoolBusConfiguration.getPopulationSize()) {
+            List<BusSchoolEntity>  newPopulation = new ArrayList<>();
+            while (newPopulation.size() <= this.schoolBusConfiguration.getPopulationSize()) {
                 BusSchoolEntity child = null;
                 double r = new Random().nextDouble();
                 if (r < this.schoolBusConfiguration.getCrossOverRate()) {
@@ -91,7 +91,7 @@ public class SchoolBusServiceImpl implements SchoolBusService {
             this.updateElites(newPopulation);
             this.population = newPopulation;
             this.sort();
-            System.out.println("Generation " + generation + " - Best solution fitness: " + this.population.get(0).getFitness() + " (" + this.getBestSolutionRoutesLength(this.distanceMatrices) + " minutes)");
+            System.out.println("Generation " + generation + " - Best solution fitness: " + this.population.get(generation).getFitness() + " (" + this.getBestSolutionRoutesLength(this.distanceMatrices) + " meters)");
         }
         System.out.println("Solution found");
         this.population.get(0).printBeautifully(this.distanceMatrices);
